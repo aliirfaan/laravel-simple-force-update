@@ -1,0 +1,27 @@
+{
+    "name": "aliirfaan/laravel-simple-force-update",
+    "description": "Keep application versions in Semantic Versioning (SemVer) format. Compare local and current/published version. Useful to force update mobile applications.",
+    "keywords": ["Laravel", "Force update", "Semantic verisoning"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "aliirfaan",
+            "email": "aliirfaan.freelance@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "aliirfaan\\LaravelSimpleForceUpdate\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "aliirfaan\\LaravelSimpleForceUpdate\\SimpleForceUpdateProvider"
+            ]
+        }
+    },
+    "require": {
+        "naneau/semver": "^0.0.7"
+    }
+}
