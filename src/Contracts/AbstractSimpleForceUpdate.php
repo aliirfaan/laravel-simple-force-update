@@ -68,9 +68,10 @@ abstract class AbstractSimpleForceUpdate
      * 
      * Compares candidate version with release version and suggest update action
      * 
-     * candidate version == max version : No action
+     * candidate version == max version || candidate version > max version : No action
      * candidate version < max version && candidate version > min version : Action: update available
      * candidate version < min version : Action: update required / force update
+     * candidate version == min version : Action: update available
      * 
      * @param  string $candidateVersion candidate version in semanting versioning format
      * @param  string $appName name of the application
@@ -96,6 +97,9 @@ abstract class AbstractSimpleForceUpdate
                 $updateFeedback['action'] = 'no_action';
                 $updateFeedback['message'] = 'No update available, no action required.';
             } elseif ($this->SemVerService->smallerThan($candidateVersion, $releaseMaxVersion) && $this->SemVerService->greaterThan($candidateVersion, $releaseMinVersion)) {
+                $updateFeedback['action'] = 'update_available';
+                $updateFeedback['message'] = $releaseVersionResult['result'][ $platform]->update_available_msg;
+            } elseif ($this->SemVerService->equals($candidateVersion, $releaseMinVersion)) {
                 $updateFeedback['action'] = 'update_available';
                 $updateFeedback['message'] = $releaseVersionResult['result'][ $platform]->update_available_msg;
             } elseif ($this->SemVerService->smallerThan($candidateVersion, $releaseMinVersion)) {
