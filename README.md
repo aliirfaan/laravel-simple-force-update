@@ -9,7 +9,7 @@ Very often we want clients, especially mobile applications to update to the late
 * Provides interface so that you can implement your own force update logic
 
 ## Default force update logic
-* candidate version == max version : No action
+* candidate version == max version ||  candidate version > max version : No action
 * candidate version < max version && candidate version > min version : Action: update available
 * candidate version < min version : Action: update required / force update
 
