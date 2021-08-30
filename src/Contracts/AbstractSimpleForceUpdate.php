@@ -4,6 +4,7 @@ namespace aliirfaan\LaravelSimpleForceUpdate\Contracts;
 
 use aliirfaan\LaravelSimpleForceUpdate\Models\Version;
 use aliirfaan\LaravelSimpleForceUpdate\Services\SemVerService;
+use aliirfaan\LaravelSimpleForceUpdate\Exceptions\ComparisonException;
 
 /**
  * AbstractSimpleForceUpdate
@@ -86,33 +87,37 @@ abstract class AbstractSimpleForceUpdate
             'message' => null
         ];
 
-        $releaseVersionResult = $this->getVersions($appName, $platform);
-        if ($releaseVersionResult['success'] == true) {
-            $releaseVersion = $releaseVersionResult['result'][ $platform];
-            $releaseMinVersion = $releaseVersionResult['result'][ $platform]->min_ver;
-            $releaseMaxVersion = $releaseVersionResult['result'][ $platform]->max_ver;
+        try {
+            $releaseVersionResult = $this->getVersions($appName, $platform);
+            if ($releaseVersionResult['success'] == true) {
+                $releaseVersion = $releaseVersionResult['result'][ $platform];
+                $releaseMinVersion = $releaseVersionResult['result'][ $platform]->min_ver;
+                $releaseMaxVersion = $releaseVersionResult['result'][ $platform]->max_ver;
 
-            $updateFeedback['update_url'] = $releaseVersionResult['result'][ $platform]->update_url;
-            if ($this->SemVerService->equals($candidateVersion, $releaseMaxVersion) || $this->SemVerService->greaterThan($candidateVersion, $releaseMaxVersion)) {
-                $updateFeedback['action'] = 'no_action';
-                $updateFeedback['message'] = 'No update available, no action required.';
-            } elseif ($this->SemVerService->smallerThan($candidateVersion, $releaseMaxVersion) && $this->SemVerService->greaterThan($candidateVersion, $releaseMinVersion)) {
-                $updateFeedback['action'] = 'update_available';
-                $updateFeedback['message'] = $releaseVersionResult['result'][ $platform]->update_available_msg;
-            } elseif ($this->SemVerService->equals($candidateVersion, $releaseMinVersion)) {
-                $updateFeedback['action'] = 'update_available';
-                $updateFeedback['message'] = $releaseVersionResult['result'][ $platform]->update_available_msg;
-            } elseif ($this->SemVerService->smallerThan($candidateVersion, $releaseMinVersion)) {
-                $updateFeedback['action'] = 'update_required';
-                $updateFeedback['message'] = $releaseVersionResult['result'][ $platform]->update_required_msg;
+                $updateFeedback['update_url'] = $releaseVersionResult['result'][ $platform]->update_url;
+                if ($this->SemVerService->equals($candidateVersion, $releaseMaxVersion) || $this->SemVerService->greaterThan($candidateVersion, $releaseMaxVersion)) {
+                    $updateFeedback['action'] = 'no_action';
+                    $updateFeedback['message'] = 'No update available, no action required.';
+                } elseif ($this->SemVerService->smallerThan($candidateVersion, $releaseMaxVersion) && $this->SemVerService->greaterThan($candidateVersion, $releaseMinVersion)) {
+                    $updateFeedback['action'] = 'update_available';
+                    $updateFeedback['message'] = $releaseVersionResult['result'][ $platform]->update_available_msg;
+                } elseif ($this->SemVerService->equals($candidateVersion, $releaseMinVersion)) {
+                    $updateFeedback['action'] = 'update_available';
+                    $updateFeedback['message'] = $releaseVersionResult['result'][ $platform]->update_available_msg;
+                } elseif ($this->SemVerService->smallerThan($candidateVersion, $releaseMinVersion)) {
+                    $updateFeedback['action'] = 'update_required';
+                    $updateFeedback['message'] = $releaseVersionResult['result'][ $platform]->update_required_msg;
+                }
+
+                $data['success'] = true;
+                $data['result'] = $releaseVersionResult['result'];
+                $data['result']['compatibility'] = (object) $updateFeedback;
+                $data['message'] = 'Record found.';
+            } else {
+                $data['message'] = $releaseVersionResult['message'];
             }
-
-            $data['success'] = true;
-            $data['result'] = $releaseVersionResult['result'];
-            $data['result']['compatibility'] = (object) $updateFeedback;
-            $data['message'] = 'Record found.';
-        } else {
-            $data['message'] = $releaseVersionResult['message'];
+        } catch (ComparisonException $e) {
+            $data['message'] = 'Could not parse semantic version. ' . $e->getMessage();
         }
         
         return $data;
