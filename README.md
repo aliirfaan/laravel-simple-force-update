@@ -12,6 +12,7 @@ Very often we want clients, especially mobile applications to update to the late
 * candidate version == max version ||  candidate version > max version : No action
 * candidate version < max version && candidate version > min version : Action: update available
 * candidate version < min version : Action: update required / force update
+* candidate version == min version : Action: update available
 
 ## Requirements
 
