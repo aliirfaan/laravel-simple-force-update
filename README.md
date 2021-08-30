@@ -7,6 +7,7 @@ Very often we want clients, especially mobile applications to update to the late
 * Table structure to keep versions with support for multiple applications and platforms
 * Uses semantic versioning format to keep versions
 * Provides interface so that you can implement your own force update logic
+* Throws custom exception when invalid semantic string is encountered
 
 ## Default force update logic
 * candidate version == max version ||  candidate version > max version : No action
