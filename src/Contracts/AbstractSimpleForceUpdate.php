@@ -92,7 +92,7 @@ abstract class AbstractSimpleForceUpdate
             $releaseMaxVersion = $releaseVersionResult['result'][ $platform]->max_ver;
 
             $updateFeedback['update_url'] = $releaseVersionResult['result'][ $platform]->update_url;
-            if ($this->SemVerService->equals($candidateVersion, $releaseMaxVersion)) {
+            if ($this->SemVerService->equals($candidateVersion, $releaseMaxVersion) || $this->SemVerService->greaterThan($candidateVersion, $releaseMaxVersion)) {
                 $updateFeedback['action'] = 'no_action';
                 $updateFeedback['message'] = 'No update available, no action required.';
             } elseif ($this->SemVerService->smallerThan($candidateVersion, $releaseMaxVersion) && $this->SemVerService->greaterThan($candidateVersion, $releaseMinVersion)) {
