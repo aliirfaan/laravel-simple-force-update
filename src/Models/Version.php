@@ -20,7 +20,7 @@ class Version extends Model
     public function getVersions($appName = 'default', $platform = null)
     {
         $query = DB::table('lsfu_versions')
-                    ->select(['platform', 'min_ver', 'max_ver', 'update_url', 'update_available_msg', 'update_required_msg'])
+                    ->select(['platform', 'min_ver', 'max_ver', 'update_url', 'update_available_title', 'update_required_title', 'update_available_msg', 'update_required_msg'])
                     ->whereRaw('LOWER(app_name) = ?', strtolower($appName));
 
         $result = [];

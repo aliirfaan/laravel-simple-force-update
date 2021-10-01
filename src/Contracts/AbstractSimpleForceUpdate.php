@@ -97,15 +97,19 @@ abstract class AbstractSimpleForceUpdate
                 $updateFeedback['update_url'] = $releaseVersionResult['result'][ $platform]->update_url;
                 if ($this->SemVerService->equals($candidateVersion, $releaseMaxVersion) || $this->SemVerService->greaterThan($candidateVersion, $releaseMaxVersion)) {
                     $updateFeedback['action'] = 'no_action';
+                    $updateFeedback['title'] = 'no_action';
                     $updateFeedback['message'] = 'No update available, no action required.';
                 } elseif ($this->SemVerService->smallerThan($candidateVersion, $releaseMaxVersion) && $this->SemVerService->greaterThan($candidateVersion, $releaseMinVersion)) {
                     $updateFeedback['action'] = 'update_available';
+                    $updateFeedback['title'] = $releaseVersionResult['result'][ $platform]->update_available_title;
                     $updateFeedback['message'] = $releaseVersionResult['result'][ $platform]->update_available_msg;
                 } elseif ($this->SemVerService->equals($candidateVersion, $releaseMinVersion)) {
                     $updateFeedback['action'] = 'update_available';
+                    $updateFeedback['title'] = $releaseVersionResult['result'][ $platform]->update_available_title;
                     $updateFeedback['message'] = $releaseVersionResult['result'][ $platform]->update_available_msg;
                 } elseif ($this->SemVerService->smallerThan($candidateVersion, $releaseMinVersion)) {
                     $updateFeedback['action'] = 'update_required';
+                    $updateFeedback['title'] = $releaseVersionResult['result'][ $platform]->update_required_title;
                     $updateFeedback['message'] = $releaseVersionResult['result'][ $platform]->update_required_msg;
                 }
 

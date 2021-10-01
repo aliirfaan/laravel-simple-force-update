@@ -20,6 +20,8 @@ class CreateLsfuVersionsTable extends Migration
             $table->string('min_ver');
             $table->string('max_ver');
             $table->string('update_url')->nullable();
+            $table->text('update_available_title')->nullable();
+            $table->text('update_required_title')->nullable();
             $table->text('update_available_msg')->nullable();
             $table->text('update_required_msg')->nullable();
             $table->timestamps();
